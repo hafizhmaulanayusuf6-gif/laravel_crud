@@ -2,40 +2,90 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Produk; // Pastikan ini ada untuk memanggil Model
+use App\Models\Produk;
 use Illuminate\Http\Request;
+use App\Models\Kategori;
+
 
 class ProdukController extends Controller
 {
-    // 1. Menampilkan semua data (Fungsi yang tadi dicari oleh Laravel)
-    public function index()
+    // 1. Menampilkan semua data
+    public function index(Request $request)
     {
-        $produks = Produk::all(); 
-        return view('produk.index', compact('produks')); 
+
+        $sortField = $request->get('sort', 'created_at');
+        $sortDirection = $request->get('direction', 'desc');
+
+        $produks = Produk::when($request->search, function ($query) use ($request) {
+            $query->where('nama_produk', 'like', '%'. $request->search . '%');
+        })
+        ->orderBy($sortField, $sortDirection)
+        ->paginate(5)
+        ->withQueryString();
+        return view('produk.index', compact('produks'));
     }
 
-    // 2. Menampilkan halaman form tambah data
+    // 2. Menampilkan form tambah data
     public function create()
     {
-        return view('produk.create');
+        $kategoris = Kategori::all();
+        return view('produk.create', compact('kategoris'));
     }
 
-    // 3. Menyimpan data dari form ke database (Fungsi yang sudah kita perbaiki tadi)
+    // 3. Menyimpan data baru
     public function store(Request $request)
     {
-        // Validasi data
-        $request->validate([
-            'nama_produk' => 'required',
-            'harga' => 'required|numeric',
-            'stok' => 'required|numeric',
-        ]);
+       $validated = $request->validate([
+        'nama_produk' => 'required|string|max:255|unique:produks,nama_produk',
+        'harga' => 'required|numeric|min:0',
+        'stok' => 'required|integer|min:0',
+        'kategori_id' => 'nullable|exists:kategoris,id',
+    ], [
+        'nama_produk.required' => 'Nama produk wajib diisi.',
+        'nama_produk.unique' => 'Nama produk ini sudah ada, gunakan nama lain.',
+        'harga.min' => 'Harga tidak boleh kurang dari 0.',
+        'stok.min' => 'Stok tidak boleh kurang dari 0.',
+        'kategori_id.exists' => 'Kategori yang dipilih tidak valid.',
+    ]);
 
-        // Simpan data
-        Produk::create($request->all());
+        Produk::create($validated);
 
-        // Kembali ke halaman index dengan pesan sukses
         return redirect()->route('produk.index')->with('success', 'Produk berhasil ditambahkan!');
     }
 
-    // (Fungsi edit, update, destroy bisa ditambahkan nanti)
+    // 4. Menampilkan form edit (butuh data lama untuk diisi ke form)
+    public function edit(Produk $produk)
+    {
+        $kategoris = Kategori::all();
+        return view('produk.edit', compact('produk'));
+    }
+
+    // 5. Menyimpan hasil perubahan ke database
+    public function update(Request $request, Produk $produk)
+    {
+        $validated = $request->validate([
+        'nama_produk' => 'required|string|max:255|unique:produks,nama_produk,' . $produk->id,
+        'harga' => 'required|numeric|min:0',
+        'stok' => 'required|integer|min:0',
+        'kategori_id' => 'nullable|exists:kategoris,id',
+    ], [
+        'nama_produk.required' => 'Nama produk wajib diisi.',
+        'nama_produk.unique' => 'Nama produk ini sudah ada, gunakan nama lain.',
+        'harga.min' => 'Harga tidak boleh kurang dari 0.',
+        'stok.min' => 'Stok tidak boleh kurang dari 0.',
+        'kategori_id.exists' => 'Kategori yang dipilih tidak valid.',
+    ]);
+
+        $produk->update($validated);
+
+        return redirect()->route('produk.index')->with('success', 'Produk berhasil diupdate!');
+    }
+
+    // 6. Menghapus data
+    public function destroy(Produk $produk)
+    {
+        $produk->delete();
+
+        return redirect()->route('produk.index')->with('success', 'Produk berhasil dihapus!');
+    }
 }
