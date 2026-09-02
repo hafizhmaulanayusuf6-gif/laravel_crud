@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Produk</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<div class="container mt-5">
+@extends('layouts.produk')
+
+@section('title', 'Edit Produk')
+
+@section('content')
 
     <h2>Edit Produk</h2>
 
@@ -39,10 +35,20 @@
             <input type="number" name="stok" class="form-control" value="{{ old('stok', $produk->stok) }}" required>
         </div>
 
+        <div class="mb-3">
+            <label>Kategori:</label>
+            <select name="kategori_id" class="form-control">
+                <option value="">-- Pilih Kategori --</option>
+                @foreach ($kategoris as $kategori)
+                    <option value="{{ $kategori->id }}" {{ old('kategori_id', $produk->kategori_id) == $kategori->id ? 'selected' : '' }}>
+                        {{ $kategori->nama_kategori }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
         <button type="submit" class="btn btn-primary">Update Data</button>
         <a href="{{ route('produk.index') }}" class="btn btn-secondary">Batal</a>
     </form>
 
-</div>
-</body>
-</html>
+@endsection

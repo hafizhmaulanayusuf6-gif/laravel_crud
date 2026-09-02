@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Tambah Produk</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<div class="container mt-5">
+@extends('layouts.produk')
+
+@section('title', 'Tambah Produk')
+
+@section('content')
 
     <h2>Tambah Produk Baru</h2>
 
@@ -43,8 +39,7 @@
             <select name="kategori_id" class="form-control">
                 <option value="">-- Pilih Kategori --</option>
                 @foreach ($kategoris as $kategori)
-                    <option value="{{ $kategori->id }}"
-                        {{ old('kategori_id', $produk->kategori_id ?? '') == $kategori->id ? 'selected' : '' }}>
+                    <option value="{{ $kategori->id }}" {{ old('kategori_id') == $kategori->id ? 'selected' : '' }}>
                         {{ $kategori->nama_kategori }}
                     </option>
                 @endforeach
@@ -55,6 +50,4 @@
         <a href="{{ route('produk.index') }}" class="btn btn-secondary">Batal</a>
     </form>
 
-</div>
-</body>
-</html>
+@endsection

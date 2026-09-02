@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Data Produk</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<div class="container mt-5">
+@extends('layouts.produk')
+
+@section('title', 'Data Produk')
+
+@section('content')
 
     <h2>Daftar Produk</h2>
 
@@ -16,8 +12,16 @@
         </div>
     @endif
 
-    <a href="{{ route('produk.create') }}" class="btn btn-primary mb-3">+ Tambah Produk</a>
-    <a href="{{ route('kategori.index') }}" class="btn btn-outline-dark mb-3">Kelola Kategori</a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <a href="{{ route('produk.create') }}" class="btn btn-primary">+ Tambah Produk</a>
+            <a href="{{ route('kategori.index') }}" class="btn btn-outline-dark">Kelola Kategori</a>
+        </div>
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="btn btn-outline-danger">Logout ({{ Auth::user()->name }})</button>
+        </form>
+    </div>
 
     <form action="{{ route('produk.index') }}" method="GET" class="mb-3 d-flex gap-2">
         <input type="text" name="search" class="form-control" placeholder="Cari nama produk..." value="{{ request('search') }}">
@@ -68,7 +72,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="5" class="text-center">Belum ada data produk.</td>
+                <td colspan="6" class="text-center">Belum ada data produk.</td>
             </tr>
             @endforelse
         </tbody>
@@ -78,6 +82,4 @@
         {{ $produks->links('pagination::bootstrap-5') }}
     </div>
 
-</div>
-</body>
-</html>
+@endsection

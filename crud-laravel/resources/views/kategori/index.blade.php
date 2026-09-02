@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Data Kategori</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<div class="container mt-5">
+@extends('layouts.produk')
+
+@section('title', 'Data Kategori')
+
+@section('content')
 
     <h2>Daftar Kategori</h2>
 
@@ -57,6 +53,4 @@
         {{ $kategoris->links('pagination::bootstrap-5') }}
     </div>
 
-</div>
-</body>
-</html>
+@endsection

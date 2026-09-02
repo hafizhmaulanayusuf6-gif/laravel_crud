@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Tambah Kategori</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<div class="container mt-5">
+@extends('layouts.produk')
+
+@section('title', 'Tambah Kategori')
+
+@section('content')
 
     <h2>Tambah Kategori Baru</h2>
 
@@ -32,6 +28,4 @@
         <a href="{{ route('kategori.index') }}" class="btn btn-secondary">Batal</a>
     </form>
 
-</div>
-</body>
-</html>
+@endsection

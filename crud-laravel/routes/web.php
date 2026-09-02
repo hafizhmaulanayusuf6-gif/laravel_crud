@@ -3,13 +3,25 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\KategoriController;
-
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return redirect()->route('produk.index');
 });
 
-Route::resource('kategori', KategoriController::class);
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-// Route resource otomatis membuatkan URL untuk semua fitur CRUD
-Route::resource('produk', ProdukController::class);
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('produk', ProdukController::class);
+    Route::resource('kategori', KategoriController::class);
+});
+
+require __DIR__.'/auth.php';
