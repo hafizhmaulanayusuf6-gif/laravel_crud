@@ -16,20 +16,17 @@ class ProdukController extends Controller
         $sortField = $request->get('sort', 'created_at');
         $sortDirection = $request->get('direction', 'desc');
 
-        $produks = Produk::when($request->search, function ($query) use ($request) {
-            $query->where('nama_produk', 'like', '%' . $request->search . '%');
-        })
+        $produks = Produk::with('kategori')
+            ->when($request->search, function ($query) use ($request) {
+                $query->where('nama_produk', 'like', '%' . $request->search . '%');
+            })
             ->orderBy($sortField, $sortDirection)
             ->paginate(5)
             ->withQueryString();
-        return view('produk.index', compact('produks'));
-    }
 
-    // 2. Menampilkan form tambah data
-    public function create()
-    {
         $kategoris = Kategori::all();
-        return view('produk.create', compact('kategoris'));
+
+        return view('produk.index', compact('produks', 'kategoris'));
     }
 
     // 3. Menyimpan data baru

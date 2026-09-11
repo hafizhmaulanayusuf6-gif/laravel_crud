@@ -12,11 +12,6 @@ class KategoriController extends Controller
         return view('kategori.index', compact('kategoris'));
     }
 
-    public function create()
-    {
-        return view('kategori.create');
-    }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -29,11 +24,6 @@ class KategoriController extends Controller
         Kategori::create($validated);
 
         return redirect()->route('kategori.index')->with('success', 'Kategori berhasil ditambahkan!');
-    }
-
-    public function edit(Kategori $kategori)
-    {
-        return view('kategori.edit', compact('kategori'));
     }
 
     public function update(Request $request, Kategori $kategori)
